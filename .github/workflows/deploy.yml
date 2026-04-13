@@ -8,10 +8,6 @@ jobs:
     name: Build & Deploy to Testnet
     runs-on: ubuntu-latest
 
-    defaults:
-      run:
-        working-directory: ./smartContract
-
     steps:
       - uses: actions/checkout@v4
         with:
@@ -33,6 +29,7 @@ jobs:
           key: ${{ runner.os }}-cargo-${{ hashFiles('smartContract/**/Cargo.lock') }}
 
       - name: Pin incompatible dependencies
+        working-directory: smartContract
         run: |
           cargo update serde_with@3.18.0 --precise 3.17.0 || true
           cargo update serde_with_macros@3.18.0 --precise 3.17.0 || true
@@ -42,6 +39,7 @@ jobs:
           cargo update indexmap@2.14.0 --precise 2.6.0 || true
 
       - name: Build contracts
+        working-directory: smartContract
         run: |
           cargo build --target wasm32-unknown-unknown --release --manifest-path=contracts/factory/Cargo.toml
           cargo build --target wasm32-unknown-unknown --release --manifest-path=contracts/rotational/Cargo.toml
@@ -56,6 +54,7 @@ jobs:
 
       - name: Deploy Factory contract
         id: factory
+        working-directory: smartContract
         run: |
           FACTORY_ID=$(stellar contract deploy \
             --wasm target/wasm32-unknown-unknown/release/jointsave_factory.wasm \
@@ -66,6 +65,7 @@ jobs:
 
       - name: Install Rotational wasm
         id: rotational
+        working-directory: smartContract
         run: |
           HASH=$(stellar contract install \
             --wasm target/wasm32-unknown-unknown/release/jointsave_rotational.wasm \
@@ -76,6 +76,7 @@ jobs:
 
       - name: Install Target wasm
         id: target
+        working-directory: smartContract
         run: |
           HASH=$(stellar contract install \
             --wasm target/wasm32-unknown-unknown/release/jointsave_target.wasm \
@@ -86,6 +87,7 @@ jobs:
 
       - name: Install Flexible wasm
         id: flexible
+        working-directory: smartContract
         run: |
           HASH=$(stellar contract install \
             --wasm target/wasm32-unknown-unknown/release/jointsave_flexible.wasm \
