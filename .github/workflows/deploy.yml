@@ -10,7 +10,7 @@ jobs:
 
     defaults:
       run:
-        working-directory: smartContract
+        working-directory: ./smartContract
 
     steps:
       - uses: actions/checkout@v4
@@ -48,7 +48,6 @@ jobs:
 
       - name: Install Stellar CLI
         run: cargo install stellar-cli
-        working-directory: .
 
       - name: Import deployer key
         run: stellar keys add deployer --secret-key <<< "${{ secrets.DEPLOYER_SECRET_KEY }}"
