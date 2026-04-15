@@ -1,16 +1,9 @@
-# Compiler files
-cache/
-out/
+# Build artifacts
+targett/
 
-# Ignores development broadcast logs
-!/broadcast
-/broadcast/*/31337/
-/broadcast/**/dry-run/
-
-# Docs
-docs/
-
-target/
-broadcast/
 # Dotenv file
 .env
+
+# Broadcast logs
+broadcast/*/31337/
+broadcast/**/dry-run/
