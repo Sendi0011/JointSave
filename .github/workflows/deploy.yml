@@ -16,7 +16,7 @@ jobs:
       - name: Install Rust
         uses: dtolnay/rust-toolchain@stable
         with:
-          toolchain: "1.92.0"
+          toolchain: "1.85.0"
           targets: wasm32-unknown-unknown
 
       - name: Cache cargo
@@ -26,7 +26,7 @@ jobs:
             ~/.cargo/registry
             ~/.cargo/git
             smartcontract/target
-          key: ${{ runner.os }}-cargo-${{ hashFiles('smartContract/**/Cargo.lock') }}
+          key: ${{ runner.os }}-cargo-${{ hashFiles('smartcontract/**/Cargo.lock') }}
 
       - name: Pin incompatible dependencies
         working-directory: smartcontract
@@ -47,7 +47,11 @@ jobs:
           cargo build --target wasm32-unknown-unknown --release --manifest-path=contracts/flexible/Cargo.toml
 
       - name: Install Stellar CLI
-        run: cargo install stellar-cli
+        run: |
+          wget -q https://github.com/stellar/stellar-cli/releases/download/v25.2.0/stellar-cli-25.2.0-x86_64-unknown-linux-gnu.tar.gz
+          tar -xzf stellar-cli-25.2.0-x86_64-unknown-linux-gnu.tar.gz
+          sudo mv stellar /usr/local/bin/stellar
+          stellar --version
 
       - name: Import deployer key
         run: stellar keys add deployer --secret-key <<< "${{ secrets.DEPLOYER_SECRET_KEY }}"
