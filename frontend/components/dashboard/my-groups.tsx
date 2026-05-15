@@ -8,6 +8,7 @@ import Link from "next/link";
 import { motion } from "framer-motion";
 import { useState, useEffect } from "react";
 import { useStellar } from "@/components/web3-provider";
+import Image from "next/image";
 
 interface Pool {
   id: string;
@@ -149,8 +150,14 @@ export function MyGroups({ onCreateClick }: MyGroupsProps) {
         >
           <Card className="p-12 text-center">
             <div className="max-w-md mx-auto">
-              <div className="flex h-16 w-16 items-center justify-center rounded-full bg-primary/10 mx-auto mb-4">
-                <Users className="h-8 w-8 text-primary" />
+              <div className="flex h-16 w-16 items-center justify-center rounded-full overflow-hidden mx-auto mb-4">
+                <Image 
+                  src="/joint-save.jpg" 
+                  alt="JointSave Logo" 
+                  width={64} 
+                  height={64}
+                  className="object-cover"
+                />
               </div>
               <h3 className="text-xl font-semibold mb-2">No groups yet</h3>
               <p className="text-muted-foreground mb-6">
