@@ -9,6 +9,7 @@ import { Loader2, ArrowUpRight, ArrowDownLeft, AlertCircle } from "lucide-react"
 import { useStellar } from "@/components/web3-provider"
 import {
   useRotationalDeposit,
+  useTriggerPayout,
   useTargetContribute,
   useTargetWithdraw,
   useFlexibleDeposit,
@@ -29,6 +30,7 @@ export function GroupActions({ groupId, poolAddress, poolType }: GroupActionsPro
   const [error, setError] = useState("")
 
   const rotationalDeposit = useRotationalDeposit(poolAddress)
+  const triggerPayout = useTriggerPayout(poolAddress)
   const targetContribute = useTargetContribute(poolAddress, depositAmount)
   const targetWithdraw = useTargetWithdraw(poolAddress)
   const flexibleDeposit = useFlexibleDeposit(poolAddress, depositAmount)
@@ -172,11 +174,28 @@ export function GroupActions({ groupId, poolAddress, poolType }: GroupActionsPro
         )}
 
         {isRotational && (
-          <div className="border-t border-border pt-6 bg-blue-50 dark:bg-blue-950 p-3 rounded">
+          <div className="border-t border-border pt-6 space-y-3">
             <p className="text-xs text-muted-foreground">
-              Rotational Pool: No direct withdrawals. Payouts are automatic when your turn comes.
-              A relayer triggers payouts on schedule via the Soroban contract.
+              Rotational Pool: No direct withdrawals. Payouts are triggered when your turn comes.
             </p>
+            <Button
+              variant="outline"
+              className="w-full bg-transparent"
+              onClick={async () => {
+                setError("")
+                if (!address) return setError("Please connect your wallet first")
+                if (isPending) return setError("Contract not yet deployed.")
+                try { await triggerPayout.trigger() }
+                catch (e: any) { setError(e.message || "Transaction failed") }
+              }}
+              disabled={triggerPayout.isLoading || !address || isPending}
+            >
+              {triggerPayout.isLoading ? (
+                <><Loader2 className="mr-2 h-4 w-4 animate-spin" />Processing...</>
+              ) : (
+                <><ArrowDownLeft className="mr-2 h-4 w-4" />Trigger Payout</>
+              )}
+            </Button>
           </div>
         )}
 
