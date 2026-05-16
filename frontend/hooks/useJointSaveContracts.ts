@@ -200,9 +200,8 @@ export function useTargetContribute(poolContractId: string, amount: string) {
 
   const contribute = useCallback(async () => {
     if (!address) throw new Error("Wallet not connected")
-    // amount in stroops (1 XLM = 10_000_000 stroops)
     const stroops = Math.round(parseFloat(amount) * 1e7).toString()
-    return call(poolContractId, "contribute", [
+    return call(poolContractId, "deposit", [
       addrVal(address),
       i128Val(stroops),
     ])
